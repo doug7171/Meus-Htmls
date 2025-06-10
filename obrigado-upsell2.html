@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabéns! Acesso VIP Exclusivo Confirmado</title>
+    <style>
+        :root {
+            --primary-color: #ff1744;
+            --secondary-color: #d50000;
+            --background-color: #121212;
+            --surface-color: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #b3b3b3;
+            --success-color: #00e676;
+            --error-color: #ff5252;
+            --warning-color: #ffc107;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 23, 68, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(213, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 23, 68, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 520px;
+            width: 100%;
+            background: var(--surface-color);
+            border-radius: 24px;
+            padding: 48px 32px;
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+        
+        .success-animation {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+        
+        .success-animation svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .checkmark {
+            stroke: var(--success-color);
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.8s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+        
+        .circle {
+            stroke: var(--success-color);
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: drawCircle 1s ease-out forwards;
+        }
+        
+        @keyframes drawCircle {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+        
+        .plan-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 16px;
+        }
+        
+        .features {
+            text-align: left;
+            margin: 24px 0;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+        
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            color: var(--success-color);
+            flex-shrink: 0;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 18px 48px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(255, 23, 68, 0.3);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 23, 68, 0.4);
+        }
+        
+        .btn-icon {
+            margin-right: 8px;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+        }
+        
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .error-message,
+        .warning-message {
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin: 24px 0;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .error-message {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid rgba(255, 82, 82, 0.3);
+            color: var(--error-color);
+        }
+        
+        .warning-message {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: var(--warning-color);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .support-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .support-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 32px 24px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .plan-value {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 16px 32px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+    
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        
+        fbq('init', '762329735626570'); 
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=762329735626570&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+</head>
+<body>
+    <div class="container">
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">Verificando seu pagamento...</p>
+        </div>
+        
+        <div id="content" class="hidden">
+            <div class="success-animation">
+                <svg viewBox="0 0 100 100">
+                    <circle class="circle" cx="50" cy="50" r="45"/>
+                    <path class="checkmark" d="M25 50 L40 65 L75 30"/>
+                </svg>
+            </div>
+            
+            <h1>Pagamento Confirmado!</h1>
+            <p class="subtitle">Bem-vindo ao VIP Exclusivo INC3STUS+18</p>
+            
+            <div class="info-card">
+                <div class="plan-name">Mensal + 3 VIP Bônus</div>
+                <div class="plan-value">R$ 9,90</div>
+                
+                <div class="features">
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Conteúdo proibidão exclusivo</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>3 Grupos VIP bônus raríssimos</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Material sem censura alguma</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>Apenas para maiores de idade</span>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="https://t.me/+Ug36omPCw0FjY2Mx" class="btn" id="accessButton">
+                <svg class="btn-icon" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                ACESSAR GRUPO EXCLUSIVO AGORA
+            </a>
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            <!-- Mensagem será definida pelo JavaScript -->
+        </div>
+        
+        <div id="warningMessage" class="warning-message">
+            <!-- Mensagem será definida pelo JavaScript -->
+        </div>
+        
+        <div class="footer">
+            <p>Precisa de ajuda? Entre em contato com nosso <a href="https://t.me/srsuporte" class="support-link">suporte</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Configuração
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxREyknWGBSeq35FG9YP7iF3QT74WAgFUawMvNER4Yg-4BFC-Clb44vn9anTBbF2zM/exec';
+        const TELEGRAM_GROUP_URL = 'https://t.me/+Ug36omPCw0FjY2Mx';
+        const PLAN_VALUE = 9.90;
+        const PLAN_NAME = 'Mensal Upsell 2';
+        
+        // Função para obter parâmetros da URL
+        function obterParametroURL(nome) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(nome);
+        }
+        
+        // Função para validar o código com o Google Apps Script
+        async function validarCodigo(codigo) {
+            try {
+                const url = `${GOOGLE_SCRIPT_URL}?codigo=${encodeURIComponent(codigo)}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data;
+                
+            } catch (error) {
+                console.error('Erro ao validar código:', error);
+                return { 
+                    status: false, 
+                    message: 'Erro ao conectar com o servidor. Tente novamente.' 
+                };
+            }
+        }
+        
+        // Função principal
+        async function iniciar() {
+            // Elementos da página
+            const loadingDiv = document.getElementById('loading');
+            const contentDiv = document.getElementById('content');
+            const errorDiv = document.getElementById('errorMessage');
+            const warningDiv = document.getElementById('warningMessage');
+            
+            // Obter código da URL
+            const codigo = obterParametroURL('codigo') || obterParametroURL('token');
+            const paymentId = obterParametroURL('pid');
+            const valor = obterParametroURL('valor') || PLAN_VALUE;
+            const plano = obterParametroURL('plano') || PLAN_NAME;
+            
+            // Se não houver código, mostrar erro
+            if (!codigo) {
+                loadingDiv.classList.add('hidden');
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Link inválido. Use o link enviado pelo bot após o pagamento.';
+                return;
+            }
+            
+            // Validar código com o backend
+            const resultado = await validarCodigo(codigo);
+            
+            // Esconder loading
+            loadingDiv.classList.add('hidden');
+            
+            if (resultado.status === true) {
+                // Código válido - mostrar conteúdo
+                contentDiv.classList.remove('hidden');
+                
+                // Se foi o primeiro uso, disparar evento Purchase
+                if (resultado.primeiro_uso) {
+                    // Disparar evento de compra no Facebook Pixel
+                    try {
+                        if (typeof fbq === 'function') {
+                            fbq('track', 'Purchase', {
+                                value: parseFloat(valor),
+                                currency: 'BRL',
+                                content_ids: [paymentId || 'UPSELL2'],
+                                content_type: 'product',
+                                content_name: plano || 'Mensal Upsell 2'
+                            });
+                            
+                            console.log('Evento Purchase disparado:', {
+                                value: parseFloat(valor),
+                                currency: 'BRL',
+                                content_ids: [paymentId || 'UPSELL2']
+                            });
+                        }
+                    } catch (pixelError) {
+                        console.error('Erro ao disparar pixel:', pixelError);
+                    }
+                } else {
+                    // Código já foi usado antes
+                    warningDiv.style.display = 'block';
+                    warningDiv.textContent = 'Este link já foi acessado anteriormente. Você ainda pode acessar o grupo exclusivo.';
+                }
+                
+                // Adicionar evento de clique no botão
+                document.getElementById('accessButton').addEventListener('click', function() {
+                    if (typeof fbq === 'function') {
+                        fbq('track', 'Lead', {
+                            content_name: 'Clique Acesso Grupo Exclusivo',
+                            content_category: plano
+                        });
+                    }
+                });
+                
+            } else {
+                // Código inválido ou erro
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = resultado.message || 'Código inválido ou expirado. Entre em contato com o suporte.';
+            }
+        }
+        
+        // Iniciar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', iniciar);
+    </script>
+</body>
+</html>
