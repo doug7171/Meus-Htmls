@@ -399,7 +399,6 @@
         // Configuração
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzveY9_MX0xJO8J-S0-7fP-5RyL6SuOkx94vaP_GMhlhimwnJ0MUiOLbosTiC9VcVy2/exec';
         const TELEGRAM_GROUP_URL = 'https://t.me/+6V8hiRuJ3io5MTQx';
-        const PLAN_VALUE = 24.90;
         const PLAN_NAME = 'Vitalício';
         
         // Função para obter parâmetros da URL
@@ -441,7 +440,7 @@
             // Obter código da URL
             const codigo = obterParametroURL('codigo') || obterParametroURL('token');
             const paymentId = obterParametroURL('pid');
-            const valor = obterParametroURL('valor') || PLAN_VALUE;
+            const valor = obterParametroURL('valor');
             const plano = obterParametroURL('plano') || PLAN_NAME;
             
             // Se não houver código, mostrar erro
@@ -452,8 +451,30 @@
                 return;
             }
             
+            // Verificar se já processamos este token (evita múltiplas validações)
+            const tokenProcessado = sessionStorage.getItem(`token_${codigo}`);
+            if (tokenProcessado) {
+                const dadosProcessados = JSON.parse(tokenProcessado);
+                loadingDiv.classList.add('hidden');
+                
+                if (dadosProcessados.status) {
+                    contentDiv.classList.remove('hidden');
+                    if (!dadosProcessados.primeiro_uso) {
+                        warningDiv.style.display = 'block';
+                        warningDiv.textContent = 'Você já acessou esta página anteriormente. Use o link do grupo no Telegram.';
+                    }
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = dadosProcessados.message;
+                }
+                return;
+            }
+            
             // Validar código com o backend
             const resultado = await validarCodigo(codigo);
+            
+            // Salvar resultado no sessionStorage para evitar revalidações
+            sessionStorage.setItem(`token_${codigo}`, JSON.stringify(resultado));
             
             // Esconder loading
             loadingDiv.classList.add('hidden');
@@ -462,48 +483,76 @@
                 // Código válido - mostrar conteúdo
                 contentDiv.classList.remove('hidden');
                 
-                // Se foi o primeiro uso, disparar evento Purchase
-                if (resultado.primeiro_uso) {
+                // IMPORTANTE: Só dispara o pixel se for o primeiro uso
+                if (resultado.primeiro_uso === true) {
+                    // Usar valores do resultado da validação para garantir precisão
+                    const valorFinal = resultado.valor || valor || 24.90;
+                    const planoFinal = resultado.plano || plano;
+                    const paymentIdFinal = resultado.payment_id || paymentId || 'VITALICIO';
+                    
                     // Disparar evento de compra no Facebook Pixel
                     try {
                         if (typeof fbq === 'function') {
                             fbq('track', 'Purchase', {
-                                value: parseFloat(valor),
+                                value: parseFloat(valorFinal),
                                 currency: 'BRL',
-                                content_ids: [paymentId || 'ANUAL'],
+                                content_ids: [paymentIdFinal],
                                 content_type: 'product',
-                                content_name: plano || 'Vitalício'
+                                content_name: planoFinal,
+                                // Adicionar metadados extras para debugging
+                                custom_data: {
+                                    token_usado: false,
+                                    origem: 'pagina_obrigado',
+                                    timestamp: new Date().toISOString()
+                                }
                             });
                             
-                            console.log('Evento Purchase disparado:', {
-                                value: parseFloat(valor),
+                            console.log('✅ Evento Purchase disparado (PRIMEIRO USO):', {
+                                value: parseFloat(valorFinal),
                                 currency: 'BRL',
-                                content_ids: [paymentId || 'VITALICIO']
+                                content_ids: [paymentIdFinal],
+                                plano: planoFinal
                             });
                         }
                     } catch (pixelError) {
                         console.error('Erro ao disparar pixel:', pixelError);
                     }
                 } else {
-                    // Código já foi usado antes
+                    // Token já foi usado antes - NÃO dispara pixel
+                    console.log('⚠️ Token já usado anteriormente - Pixel NÃO disparado');
                     warningDiv.style.display = 'block';
-                    warningDiv.textContent = 'Este link já foi acessado anteriormente. Você ainda pode acessar o grupo VIP.';
+                    warningDiv.textContent = 'Este link já foi acessado anteriormente. Você pode acessar o grupo VIP usando o link abaixo.';
                 }
                 
-                // Adicionar evento de clique no botão
+                // Atualizar informações na página com dados do servidor
+                if (resultado.valor) {
+                    const valorElement = document.querySelector('.plan-value');
+                    if (valorElement) {
+                        valorElement.textContent = `R$ ${parseFloat(resultado.valor).toFixed(2)}`;
+                    }
+                }
+                
+                // Adicionar evento de clique no botão (sempre, independente de ser primeiro uso)
                 document.getElementById('accessButton').addEventListener('click', function() {
                     if (typeof fbq === 'function') {
                         fbq('track', 'Lead', {
                             content_name: 'Clique Acesso Grupo VIP',
-                            content_category: plano
+                            content_category: resultado.plano || plano,
+                            custom_data: {
+                                primeiro_uso: resultado.primeiro_uso,
+                                origem: 'botao_acesso'
+                            }
                         });
                     }
                 });
                 
             } else {
-                // Código inválido ou erro
+                // Código inválido, expirado ou erro
                 errorDiv.style.display = 'block';
                 errorDiv.textContent = resultado.message || 'Código inválido ou expirado. Entre em contato com o suporte.';
+                
+                // Log para debugging
+                console.error('❌ Validação falhou:', resultado);
             }
         }
         
