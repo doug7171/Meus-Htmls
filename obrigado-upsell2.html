@@ -407,6 +407,19 @@
             return urlParams.get(nome);
         }
         
+        // Função para obter todos os parâmetros UTM e fbclid
+        function obterParametrosRastreamento() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                utm_source: urlParams.get('utm_source') || '',
+                utm_medium: urlParams.get('utm_medium') || '',
+                utm_campaign: urlParams.get('utm_campaign') || '',
+                utm_content: urlParams.get('utm_content') || '',
+                utm_term: urlParams.get('utm_term') || '',
+                fbclid: urlParams.get('fbclid') || ''
+            };
+        }
+
         // Função para validar o código com o Google Apps Script
         async function validarCodigo(codigo) {
             try {
@@ -493,26 +506,39 @@
                     // Disparar evento de compra no Facebook Pixel
                     try {
                         if (typeof fbq === 'function') {
-                            fbq('track', 'Purchase', {
-                                value: parseFloat(valorFinal),
-                                currency: 'BRL',
-                                content_ids: [paymentIdFinal],
-                                content_type: 'product',
-                                content_name: planoFinal,
-                                // Adicionar metadados extras para debugging
-                                custom_data: {
+                                // Captura parâmetros de rastreamento
+                                const tracking = obterParametrosRastreamento();
+        
+                                // Monta objeto do evento
+                                const purchaseData = {
+                                    value: parseFloat(valorFinal),
+                                    currency: 'BRL',
+                                    content_ids: [paymentIdFinal],
+                                    content_type: 'product',
+                                    content_name: planoFinal
+                                };
+        
+                                // Adiciona UTMs se existirem
+                                if (tracking.utm_source) purchaseData.utm_source = tracking.utm_source;
+                                if (tracking.utm_medium) purchaseData.utm_medium = tracking.utm_medium;
+                                if (tracking.utm_campaign) purchaseData.utm_campaign = tracking.utm_campaign;
+                                if (tracking.utm_content) purchaseData.utm_content = tracking.utm_content;
+                                if (tracking.utm_term) purchaseData.utm_term = tracking.utm_term;
+        
+                                // Adiciona fbclid se existir
+                                if (tracking.fbclid) purchaseData.fbc = `fb.1.${Date.now()}.${tracking.fbclid}`;
+        
+                                // Custom data
+                                purchaseData.custom_data = {
                                     token_usado: false,
                                     origem: 'pagina_obrigado',
-                                    timestamp: new Date().toISOString()
-                                }
-                            });
-                            
-                            console.log('✅ Evento Purchase disparado (PRIMEIRO USO):', {
-                                value: parseFloat(valorFinal),
-                                currency: 'BRL',
-                                content_ids: [paymentIdFinal],
-                                plano: planoFinal
-                            });
+                                    timestamp: new Date().toISOString(),
+                                    has_tracking: !!(tracking.utm_source || tracking.fbclid)
+                                };
+        
+                                fbq('track', 'Purchase', purchaseData);
+                                
+                                console.log('✅ Evento Purchase disparado (PRIMEIRO USO):', purchaseData);    
                         }
                     } catch (pixelError) {
                         console.error('Erro ao disparar pixel:', pixelError);
@@ -521,7 +547,7 @@
                     // Token já foi usado antes - NÃO dispara pixel
                     console.log('⚠️ Token já usado anteriormente - Pixel NÃO disparado');
                     warningDiv.style.display = 'block';
-                    warningDiv.textContent = 'Este link já foi acessado anteriormente. Você pode acessar o grupo exclusivo usando o link abaixo.';
+                    warningDiv.textContent = 'Este link já foi acessado anteriormente. Você pode acessar o grupo VIP usando o link abaixo.';
                 }
                 
                 // Atualizar informações na página com dados do servidor
@@ -536,7 +562,7 @@
                 document.getElementById('accessButton').addEventListener('click', function() {
                     if (typeof fbq === 'function') {
                         fbq('track', 'Lead', {
-                            content_name: 'Clique Acesso Grupo Exclusivo',
+                            content_name: 'Clique Acesso Grupo VIP',
                             content_category: resultado.plano || plano,
                             custom_data: {
                                 primeiro_uso: resultado.primeiro_uso,
